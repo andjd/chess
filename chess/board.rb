@@ -2,6 +2,12 @@ require_relative 'pieces.rb'
 require 'byebug'
 class Board
 
+  # self.fresh_board
+  #   a = self.new
+  #   a.populate_board
+  #   a
+  # end
+
   BACK_ROW = [
     Proc.new { |color, board| Rook.new(color, board) },
     Proc.new { |color, board| Knight.new(color, board) },
@@ -18,7 +24,6 @@ class Board
   def initialize
     @grid = Array.new(8) { Array.new(8) }
 
-    populate_board
   end
 
   def [](pos)
@@ -47,5 +52,41 @@ class Board
     # end
 
   end
+
+  def in_check?(color)
+    k = find_piece(King, color)
+
+    self.grid.flatten.each do |spot|
+      return true if spot && spot.color != color && spot.valid_moves.include?(k)
+    end
+    false
+  end
+
+  def checkmate?(color)
+  end
+
+
+  def find_piece(piece, color)
+    #returns only the first instance of piece
+    self.grid.flatten.each do |spot|
+      return spot.pos if spot.is_a?(piece) && spot.color == color
+    end
+  end
+
+
+  #incomplete
+  def deep_dup
+    dd = Board.new
+    self.grid.each.with_index do |row, idx|
+      row.each.with_index do |spot, idy|
+        dd[[idx,idy]] = spot.class.new(spot.color, dd) if spot
+      end
+    end
+    dd
+  end
+
+
+
+
 
 end

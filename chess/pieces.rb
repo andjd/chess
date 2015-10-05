@@ -72,11 +72,11 @@ module Stepping
       # end
       # true
     end
-    p l
-    p locs
+
     locs.select! do |loc|
       board[loc].nil? ? true : board[loc].color != self.color
     end
+
     locs
   end
 
@@ -91,7 +91,6 @@ class Pawn < Piece
     super
 
     @starting = nil
-    p color
     @dir = (color == :blue ? -1 : 1)
 
   end
@@ -103,7 +102,6 @@ class Pawn < Piece
   def valid_moves
     @starting ||= pos
     out = []
-    debugger
     #starting double
     next_step = [pos[0] + dir, pos[1]]
     if @starting == pos
