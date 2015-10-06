@@ -3,12 +3,11 @@ require_relative 'board.rb'
 require_relative 'cursorable.rb'
 require 'colorize'
 
-require 'byebug'
 
 class Display
   include Cursorable
 
-  attr_reader :board, :selected_piece, :game
+  attr_reader :board, :selected_piece, :game, :cursor_pos
 
   def initialize(board, game)
     @board = board
@@ -19,10 +18,10 @@ class Display
 
   def select_piece(color)
     pos = self.get_input
-    piece = @board[pos]
+    piece = board[pos]
     raise InvalidMove.new if piece.nil? || piece.color != color
 
-    @selected_piece = @board[pos]
+    @selected_piece = board[pos]
 
     nil
   end
@@ -31,27 +30,24 @@ class Display
 
     pos = self.get_input
 
-    raise InvalidMove.new unless @selected_piece.check_check.include?(pos)
+    raise InvalidMove.new unless selected_piece.safe_moves.include?(pos)
 
-    @selected_piece.move(pos)
-
+    selected_piece.move(pos)
+    ensure
     @selected_piece = nil
 
     nil
   end
 
   def next_piece
-    pieces = board.grid.flatten.select{|spot| spot && spot.color == game.current_player.color}
-    current_piece_index = pieces.map { |piece| piece.pos }.find_index(@cursor_pos)
+    pieces = board.pieces.select{ |spot| spot && spot.color == game.current_player.color }
+    current_piece_index = pieces.map { |piece| piece.pos }.find_index(cursor_pos)
     if current_piece_index
-      return pieces[(current_piece_index + 1) % pieces.length].pos
+      pieces[(current_piece_index + 1) % pieces.length].pos
     else
-      return pieces.first.pos
+      pieces.first.pos
     end
   end
-
-
-
 
   def render_board
     b = board.grid.map.with_index do |row, idx|
@@ -64,27 +60,29 @@ class Display
       end.join("")
     end.join("\n")
 
+    print "#{game.current_player.color.to_s.capitalize}'s turn "
+    puts $last_error ? "#{$last_error} \n".red : "\n\n"
+    puts selected_piece ? "Selected Piece: #{selected_piece.to_s}\n\n" : "\n\n"
     puts b
-    puts "#{game.current_player.color.to_s.capitalize}'s' turn"
-    puts "Selected Piece: #{@selected_piece.to_s}" if selected_piece
+    puts "\nUse arrow keys or WASD to move cursor."
+    puts "Use return or space to select a piece."
+    puts "Use tab to cycle through your pieces."
+    $last_error = nil
+
 
 
   end
 
   def background(i,j)
-    if [i, j] == @cursor_pos
-       :yellow
+    if selected_piece && [i, j] == selected_piece.pos
+       :cyan
+    elsif [i, j] == cursor_pos
+      :yellow
     elsif (i + j).odd?
        :light_black
     else
        :light_white
     end
   end
-
-
-
-
-
-
 
 end

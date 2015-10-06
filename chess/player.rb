@@ -1,3 +1,4 @@
+$last_error = nil
 class Player
   attr_reader :display, :color
 
@@ -11,7 +12,7 @@ class Player
     display.move_piece(color)
 
   rescue InvalidMove => e
-    puts e.message
+    $last_error =  e.message
     retry
   end
 

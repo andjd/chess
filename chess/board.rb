@@ -6,16 +6,12 @@ class Board
     self.new.populate_board
   end
 
-  BACK_ROW = [
-    Proc.new { |color, board| Rook.new(color, board) },
-    Proc.new { |color, board| Knight.new(color, board) },
-    Proc.new { |color, board| Bishop.new(color, board) },
-    Proc.new { |color, board| King.new(color, board) },
-    Proc.new { |color, board| Queen.new(color, board) },
-    Proc.new { |color, board| Bishop.new(color, board) },
-    Proc.new { |color, board| Knight.new(color, board) },
-    Proc.new { |color, board| Rook.new(color, board) }
-  ]
+  def self.on_board?(pos)
+    pos.all? {|el| el.between?(0,7)}
+  end
+
+
+  BACK_ROW = [Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook]
 
   attr_reader :grid
 
@@ -37,11 +33,11 @@ class Board
   def populate_board
 
     @grid[0].map!.with_index do |_, idx|
-      BACK_ROW[idx].call(:red, self)
+      BACK_ROW[idx].new(:red, self)
     end
 
     @grid[7].map!.with_index do |_, idx|
-      BACK_ROW[idx].call(:blue, self)
+      BACK_ROW[idx].new(:blue, self)
     end
 
     @grid[1].map! do |_|
@@ -59,7 +55,7 @@ class Board
   def in_check?(color)
     k = find_piece(King, color)
 
-    self.grid.flatten.each do |spot|
+    pieces.each do |spot|
       return true if spot && spot.color != color && spot.valid_moves.include?(k.pos)
     end
     false
@@ -68,9 +64,13 @@ class Board
   def checkmate?(color)
     return false unless in_check?(color)
 
-    k = find_piece(King, color)
+    my_pieces = pieces.select { |piece| piece.color == color }
 
-    k.check_check.empty?
+    my_pieces.each do |piece|
+      return false unless piece.safe_moves.empty?
+    end
+
+    true
   end
 
   def capture(pos)
@@ -80,27 +80,24 @@ class Board
     end
   end
 
-
+  #returns only the first instance of piece
   def find_piece(piece, color)
-    #returns only the first instance of piece
-    self.grid.flatten.each do |spot|
+    pieces.each do |spot|
       return spot if spot.is_a?(piece) && spot.color == color
     end
   end
 
+  def pieces
+    self.grid.flatten.compact
+  end
 
   def deep_dup
     dd = Board.new
-    self.grid.each.with_index do |row, idx|
-      row.each.with_index do |spot, idy|
-        dd[[idx,idy]] = spot.class.new(spot.color, dd) if spot
-      end
+    pieces.each do |piece|
+        dd[piece.pos] = piece.class.new(piece.color, dd)
     end
+
     dd
   end
-
-
-
-
 
 end

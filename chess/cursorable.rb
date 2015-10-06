@@ -43,7 +43,7 @@ module Cursorable
     when :ctrl_c
       exit 0
     when :return, :space
-      @cursor_pos
+      cursor_pos
     when :left, :right, :up, :down
       update_pos(MOVES[key])
       get_input
@@ -72,12 +72,8 @@ module Cursorable
     return input
   end
 
-  def on_board?(pos)
-    pos.all? {|el| el.between?(0,7)}
-  end
-
   def update_pos(diff)
-    new_pos = [@cursor_pos[0] + diff[0], @cursor_pos[1] + diff[1]]
-    @cursor_pos = new_pos if on_board?(new_pos)
+    new_pos = [cursor_pos[0] + diff[0], cursor_pos[1] + diff[1]]
+    @cursor_pos = new_pos if Board.on_board?(new_pos)
   end
 end
