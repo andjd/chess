@@ -2,11 +2,11 @@ require_relative 'pieces.rb'
 require 'byebug'
 class Board
 
-  # self.fresh_board
-  #   a = self.new
-  #   a.populate_board
-  #   a
-  # end
+  def self.fresh
+    a = self.new
+    a.populate_board
+    a
+  end
 
   BACK_ROW = [
     Proc.new { |color, board| Rook.new(color, board) },
@@ -31,6 +31,10 @@ class Board
     grid[x][y]
   end
 
+  def []=(pos,piece)
+    x,y = pos
+    grid[x][y] = piece
+  end
 
   def populate_board
 
@@ -57,19 +61,27 @@ class Board
     k = find_piece(King, color)
 
     self.grid.flatten.each do |spot|
-      return true if spot && spot.color != color && spot.valid_moves.include?(k)
+      return true if spot && spot.color != color && spot.valid_moves.include?(k.pos)
     end
     false
   end
 
   def checkmate?(color)
+    return false unless in_check?(color)
+
+    k = find_piece(King, color)
+
+    k.check_check.empty?
+
+
+
   end
 
 
   def find_piece(piece, color)
     #returns only the first instance of piece
     self.grid.flatten.each do |spot|
-      return spot.pos if spot.is_a?(piece) && spot.color == color
+      return spot if spot.is_a?(piece) && spot.color == color
     end
   end
 

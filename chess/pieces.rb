@@ -2,11 +2,19 @@
 class ChessError < StandardError
 end
 
+class InvalidMove < ChessError
+  def message
+    "invalid move"
+  end
+end
+
 class NotInBoard < ChessError
   def message
     "space not on board"
   end
 end
+
+require 'byebug'
 
 class Piece
 
@@ -28,6 +36,29 @@ class Piece
 
   def on_board?(pos)
     pos.all? {|el| el.between?(0,7)}
+  end
+
+  def move(new_pos)
+    raise InvalidMove.new unless self.valid_moves.include?(new_pos)
+
+    board[pos] = nil
+
+    board[new_pos] = self
+
+  end
+
+
+
+  def check_check
+    byebug
+    moves = self.valid_moves
+
+    moves.reject do |v_move|
+      phantom_board = board.deep_dup
+      phantom_piece = phantom_board[pos]
+      phantom_piece.move(v_move)
+      phantom_board.in_check?(color)
+    end
   end
 
 end
@@ -63,7 +94,7 @@ module Stepping
   def steps(pos, dirs)
     locs = dirs.map {|el| [pos[0] + el[0], pos[1] + el[1]]}
     #debugger
-    l = locs.select! do |loc|
+    locs.select! do |loc|
       on_board?(loc)
       # begin
       #   raise NotInBoard.new unless loc.all? {|el| el.between?(0,7)}
