@@ -25,11 +25,11 @@ class Chess
   attr_reader :board
   public
 
-  def initialize
+  def initialize (player1 = Player, player2 = Player)
     @board = Board.fresh
     @display = Display.new(@board, self)
-    @white = Player.new(@display, :blue)
-    @black = Player.new(@display, :red)
+    @white = player1.new(@display, :blue)
+    @black = player2.new(@display, :red)
     @current_player = @white
 
   end
@@ -47,16 +47,20 @@ class Chess
     end
 
     toggle_player
-    puts "Game Over, #{current_player.color.to_s} Won!"
-
+    if board.pieces.length <= 2
+      puts "Game Over, You Both Fail!"
+    else
+      puts "Game Over, #{current_player.color.to_s} Won!"
+    end
+    
   end
 
   def over?
-    board.checkmate?(:blue) || board.checkmate?(:red)
+    board.checkmate?(:blue) || board.checkmate?(:red) || board.pieces.length <= 2
   end
 
 end
 
 if __FILE__ == $PROGRAM_NAME
-  Chess.new.play
+  Chess.new(ComputerPlayer, ComputerPlayer).play
 end

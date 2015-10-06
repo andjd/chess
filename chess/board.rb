@@ -21,6 +21,7 @@ class Board
   end
 
   def [](pos)
+    raise InvalidMove.new unless Board.on_board?(pos)
     x,y = pos
     grid[x][y]
   end
@@ -64,9 +65,7 @@ class Board
   def checkmate?(color)
     return false unless in_check?(color)
 
-    my_pieces = pieces.select { |piece| piece.color == color }
-
-    my_pieces.each do |piece|
+    pieces(color).each do |piece|
       return false unless piece.safe_moves.empty?
     end
 
@@ -87,8 +86,10 @@ class Board
     end
   end
 
-  def pieces
-    self.grid.flatten.compact
+  def pieces(color = nil)
+    p = self.grid.flatten.compact
+    p.select! { |p| p.color == color } if color
+    p
   end
 
   def deep_dup

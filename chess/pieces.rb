@@ -92,7 +92,6 @@ class Pawn < Piece
 
   def initialize(color, board)
     super
-    @starting = nil
     @dir = (color == :blue ? -1 : 1)
   end
 
@@ -101,21 +100,18 @@ class Pawn < Piece
   end
 
   def valid_moves
-    #initializing starting position
-    @starting ||= pos
-
     out = []
     next_step = [pos[0] + dir, pos[1]]
 
     #starting double
-    if @starting == pos
+    if (color == :blue && pos[0] == 6) || (color == :red && pos[0] == 1)
       nexter_step = [pos[0]+ (dir * 2), pos[1]]
       out << next_step if board[next_step].nil?
       out << nexter_step if board[nexter_step].nil? && board[next_step].nil?
 
     #normal
     else
-      out << next_step if board[next_step].nil? && Board.on_board?(next_step)
+      out << next_step if Board.on_board?(next_step) && board[next_step].nil? 
     end
 
     #capture
