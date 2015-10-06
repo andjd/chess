@@ -1,18 +1,4 @@
 # encoding: UTF-8
-class ChessError < StandardError
-end
-
-class InvalidMove < ChessError
-  def message
-    "invalid move"
-  end
-end
-
-class NotInBoard < ChessError
-  def message
-    "space not on board"
-  end
-end
 
 require 'byebug'
 
@@ -40,6 +26,7 @@ class Piece
 
   def move(new_pos)
     raise InvalidMove.new unless self.valid_moves.include?(new_pos)
+    board.capture(pos)
 
     board[pos] = nil
 
@@ -50,7 +37,6 @@ class Piece
 
 
   def check_check
-    byebug
     moves = self.valid_moves
 
     moves.reject do |v_move|

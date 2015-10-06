@@ -32,6 +32,8 @@ module Cursorable
   }
 
   def get_input
+    system('clear')
+    render_board
     key = KEYMAP[read_char]
     handle_key(key)
   end
@@ -44,7 +46,7 @@ module Cursorable
       @cursor_pos
     when :left, :right, :up, :down
       update_pos(MOVES[key])
-      nil
+      get_input
     else
       puts key
     end
@@ -66,8 +68,12 @@ module Cursorable
     return input
   end
 
+  def on_board?(pos)
+    pos.all? {|el| el.between?(0,7)}
+  end
+
   def update_pos(diff)
     new_pos = [@cursor_pos[0] + diff[0], @cursor_pos[1] + diff[1]]
-    @cursor_pos = new_pos if @board.in_bounds?(new_pos)
+    @cursor_pos = new_pos if on_board?(new_pos)
   end
 end

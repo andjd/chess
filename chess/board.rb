@@ -23,7 +23,7 @@ class Board
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
-
+    @captured_pieces = []
   end
 
   def [](pos)
@@ -39,7 +39,6 @@ class Board
   def populate_board
 
     @grid[0].map!.with_index do |_, idx|
-      #debugger
       BACK_ROW[idx].call(:red, self)
     end
 
@@ -72,9 +71,14 @@ class Board
     k = find_piece(King, color)
 
     k.check_check.empty?
+  end
 
-
-
+  def capture(pos)
+    if self[pos]
+      captured_piece = self[pos]
+      self[pos] = nil
+      @captured_pieces << captured_piece
+    end
   end
 
 
