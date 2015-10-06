@@ -1,8 +1,8 @@
 class Player
   attr_reader :display, :color
 
-  def initialize(board, color)
-    @display = Display.new(board)
+  def initialize(display, color)
+    @display = display
     @color = color
   end
 
@@ -13,7 +13,6 @@ class Player
   rescue InvalidMove => e
     puts e.message
     retry
-
-
   end
+
 end

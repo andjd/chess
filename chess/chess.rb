@@ -15,35 +15,44 @@ class NotInBoard < ChessError
   end
 end
 
+
+
 class Chess
+
+  attr_reader :current_player
+
+  private
+  attr_reader :board
+  public
+
   def initialize
     @board = Board.fresh
-    @white = Player.new(@board, :blue)
-    @black = Player.new(@board, :red)
+    @display = Display.new(@board, self)
+    @white = Player.new(@display, :blue)
+    @black = Player.new(@display, :red)
     @current_player = @white
+
   end
 
   def toggle_player
-    @current_player = @current_player == @white ? @black : @white
+    @current_player = current_player == @white ? @black : @white
   end
 
   def play
-
     until over?
-      @current_player.take_turn
+      current_player.take_turn
 
       toggle_player
 
     end
 
     toggle_player
-
-    puts "Game Over, #{@current_player.color.to_s} Won!"
+    puts "Game Over, #{current_player.color.to_s} Won!"
 
   end
 
   def over?
-    @board.checkmate?(:blue) || @board.checkmate?(:red)
+    board.checkmate?(:blue) || board.checkmate?(:red)
   end
 
 end

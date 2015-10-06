@@ -47,8 +47,12 @@ module Cursorable
     when :left, :right, :up, :down
       update_pos(MOVES[key])
       get_input
+    when :tab
+      @cursor_pos = next_piece
+      get_input
     else
       puts key
+      raise InvalidMove.new
     end
   end
 

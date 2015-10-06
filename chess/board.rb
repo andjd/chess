@@ -3,9 +3,7 @@ require 'byebug'
 class Board
 
   def self.fresh
-    a = self.new
-    a.populate_board
-    a
+    self.new.populate_board
   end
 
   BACK_ROW = [
@@ -33,8 +31,6 @@ class Board
 
   def []=(pos,piece)
     x,y = pos
-    p x
-    p y
     grid[x][y] = piece
   end
 
@@ -52,9 +48,11 @@ class Board
       Pawn.new(:red, self)
     end
 
-    # @grid[6].map! do |_|
-    #   Pawn.new(:blue, self)
-    # end
+    @grid[6].map! do |_|
+      Pawn.new(:blue, self)
+    end
+
+    self
 
   end
 
@@ -91,7 +89,6 @@ class Board
   end
 
 
-  #incomplete
   def deep_dup
     dd = Board.new
     self.grid.each.with_index do |row, idx|

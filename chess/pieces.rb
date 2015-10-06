@@ -25,8 +25,6 @@ class Piece
   end
 
   def move(new_pos)
-    p pos
-    p new_pos
     raise InvalidMove.new unless self.valid_moves.include?(new_pos)
     board.capture(pos)
 
@@ -81,7 +79,6 @@ end
 module Stepping
   def steps(pos, dirs)
     locs = dirs.map {|el| [pos[0] + el[0], pos[1] + el[1]]}
-    #debugger
     locs.select! do |loc|
       on_board?(loc)
       # begin
