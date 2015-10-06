@@ -25,6 +25,8 @@ class Piece
   end
 
   def move(new_pos)
+    p pos
+    p new_pos
     raise InvalidMove.new unless self.valid_moves.include?(new_pos)
     board.capture(pos)
 

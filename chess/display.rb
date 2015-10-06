@@ -3,6 +3,7 @@ require_relative 'board.rb'
 require_relative 'cursorable.rb'
 require 'colorize'
 
+require 'byebug'
 
 class Display
   include Cursorable
@@ -26,6 +27,7 @@ class Display
   end
 
   def move_piece(color)
+    
     pos = self.get_input
 
     raise InvalidMove.new unless @selected_piece.check_check.include?(pos)

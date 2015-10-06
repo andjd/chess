@@ -33,6 +33,8 @@ class Board
 
   def []=(pos,piece)
     x,y = pos
+    p x
+    p y
     grid[x][y] = piece
   end
 
@@ -74,10 +76,9 @@ class Board
   end
 
   def capture(pos)
-    if self[pos]
-      captured_piece = self[pos]
-      self[pos] = nil
-      @captured_pieces << captured_piece
+     if self[pos]
+       captured_piece = self[pos]
+       @captured_pieces << captured_piece
     end
   end
 
