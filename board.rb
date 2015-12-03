@@ -1,5 +1,4 @@
 require_relative 'pieces.rb'
-require 'byebug'
 class Board
 
   def self.fresh
@@ -22,12 +21,12 @@ class Board
 
   def [](pos)
     raise InvalidMove.new unless Board.on_board?(pos)
-    x,y = pos
+    x, y = pos
     grid[x][y]
   end
 
   def []=(pos,piece)
-    x,y = pos
+    x, y = pos
     grid[x][y] = piece
   end
 
@@ -41,11 +40,11 @@ class Board
       BACK_ROW[idx].new(:blue, self)
     end
 
-    @grid[1].map! do |_|
+    @grid[1].map! do 
       Pawn.new(:red, self)
     end
 
-    @grid[6].map! do |_|
+    @grid[6].map! do 
       Pawn.new(:blue, self)
     end
 
@@ -54,10 +53,10 @@ class Board
   end
 
   def in_check?(color)
-    k = find_piece(King, color)
+    king = find_piece(King, color)
 
     pieces.each do |spot|
-      return true if spot && spot.color != color && spot.valid_moves.include?(k.pos)
+      return true if spot && spot.color != color && spot.valid_moves.include?(king.pos)
     end
     false
   end
@@ -87,18 +86,18 @@ class Board
   end
 
   def pieces(color = nil)
-    p = self.grid.flatten.compact
-    p.select! { |p| p.color == color } if color
-    p
+    pieces = self.grid.flatten.compact
+    pieces.select! { |piece| piece.color == color } if color
+    pieces
   end
 
   def deep_dup
-    dd = Board.new
+    new_board = Board.new
     pieces.each do |piece|
-        dd[piece.pos] = piece.class.new(piece.color, dd)
+        new_board[piece.pos] = piece.class.new(piece.color, new_board)
     end
 
-    dd
+    new_board
   end
 
 end

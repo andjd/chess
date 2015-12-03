@@ -1,8 +1,4 @@
-require_relative 'player.rb'
-require_relative 'board.rb'
-require_relative 'cursorable.rb'
 require 'colorize'
-
 
 class Display
   include Cursorable
@@ -31,8 +27,9 @@ class Display
     pos = self.get_input
 
     raise InvalidMove.new unless selected_piece.safe_moves.include?(pos)
-
+    
     selected_piece.move(pos)
+
     ensure
     @selected_piece = nil
 
