@@ -37,8 +37,14 @@ alternatively, you can watch two computer players engage in senseless and fruitl
 enjoy!
 
 ###Features to add:
+
 [] castling
+
 [] pawn capture en-passant
+
 [] pawn promotion
+
 [] smarter AI
+
 [] tabbing through possible moves once a piece is selected
+
