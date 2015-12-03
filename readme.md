@@ -38,13 +38,13 @@ enjoy!
 
 ###Features to add:
 
-[] castling
+[ ] castling
 
-[] pawn capture en-passant
+[ ] pawn capture en-passant
 
-[] pawn promotion
+[ ] pawn promotion
 
-[] smarter AI
+[ ] smarter AI
 
-[] tabbing through possible moves once a piece is selected
+[ ] tabbing through possible moves once a piece is selected
 
