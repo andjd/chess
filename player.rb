@@ -1,5 +1,5 @@
 $last_error = nil
-require_relative 'computer_player.rb'
+
 class Player
   attr_reader :display, :color
 

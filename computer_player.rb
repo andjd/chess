@@ -9,11 +9,12 @@ class ComputerPlayer < Player
   end
 
   def take_turn
+    sleep(1)
+
     random_move
 
     system("clear")
     display.render_board
-    #sleep(1)
   end
 
   def random_move
